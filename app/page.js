@@ -37,7 +37,7 @@ export default async function Home() {
     <>
       <Navbar />
       <main>
-        <h1 className="page-title">Kalat</h1>
+        <h1 className="page-title">Crystal Kalat</h1>
         
         {posts.length === 0 ? (
           <div className="empty-state">
