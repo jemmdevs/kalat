@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { dbConnect, Post } from '@/app/lib/dbConnect';
 import { authOptions } from '@/app/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 // Obtener todos los posts (GET)
 export async function GET() {
@@ -60,6 +61,9 @@ export async function POST(request) {
     
     // Poblar el autor para la respuesta
     await newPost.populate('author', 'name');
+    
+    // Revalidar la página principal para que muestre el nuevo post
+    revalidatePath('/');
     
     return NextResponse.json(
       { message: 'Post creado correctamente', post: newPost },

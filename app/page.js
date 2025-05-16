@@ -4,6 +4,9 @@ import Navbar from './components/Navbar';
 import { dbConnect, Post, Comment } from './lib/dbConnect';
 import './home.css';
 
+// Desactivar la caché para siempre obtener datos frescos
+export const revalidate = 0;
+
 async function getPosts() {
   await dbConnect();
   try {
