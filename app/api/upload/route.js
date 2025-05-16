@@ -14,12 +14,7 @@ export async function POST(request) {
   try {
     const response = await handleUpload({
       request,
-      token: {
-        // Esta es una forma simple de generar un token para el ejemplo
-        // En producción deberías usar un método más seguro
-        data: JSON.stringify({ userId: session.user.id }),
-        expires: Date.now() + 1000 * 60 * 10, // 10 minutos
-      },
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
     return NextResponse.json(response);
   } catch (error) {
