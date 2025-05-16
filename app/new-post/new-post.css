@@ -1,0 +1,72 @@
+.post-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.post-form-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--foreground);
+}
+
+.post-form {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.post-content-textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.form-input-file {
+  border: 1px dashed var(--border);
+  padding: 10px;
+  border-radius: 4px;
+  width: 100%;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.image-preview-container {
+  margin-top: 10px;
+  width: 100%;
+  height: 200px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.post-form-error {
+  background-color: rgba(229, 62, 62, 0.1);
+  border-left: 3px solid var(--error);
+  color: var(--error);
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.2rem;
+  color: #666;
+} 

@@ -1,12 +1,70 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Paleta de colores estilo Twitter */
+  --primary: #1d9bf0; /* Azul Twitter */
+  --primary-dark: #1a8cd8; /* Azul Twitter oscuro para hover */
+  --primary-light: #e7f5fe; /* Azul Twitter muy claro para fondos */
+  --secondary: #536471; /* Gris Twitter para textos secundarios */
+  --accent: #00ba7c; /* Verde Twitter para acciones positivas */
+  
+  /* Colores funcionales */
+  --error: #f4212e; /* Rojo Twitter */
+  --success: #00ba7c; /* Verde Twitter */
+  --warning: #ffa631; /* Naranja */
+  --info: #1d9bf0; /* Azul Twitter */
+  
+  /* Colores de fondo y texto - modo claro */
+  --background: #ffffff; /* Fondo blanco */
+  --foreground: #0f1419; /* Texto casi negro */
+  --card-bg: #ffffff; /* Blanco puro para tarjetas */
+  --card-bg-alt: #f7f9f9; /* Fondo alternativo gris muy claro */
+  --hover-bg: rgba(29, 155, 240, 0.1); /* Fondo hover azul claro */
+  
+  /* Bordes y sombras */
+  --border: #eff3f4;
+  --border-dark: #cfd9de;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* Variables para el Modo Oscuro (default para dark mode) */
+  --dark-background: #000000; /* Negro absoluto */
+  --dark-foreground: #e7e9ea; /* Texto blanco ligeramente grisáceo */
+  --dark-card-bg: #000000; /* Negro para tarjetas */
+  --dark-card-bg-alt: #16181c; /* Fondo alternativo gris muy oscuro */
+  --dark-border: #2f3336;
+  --dark-border-dark: #333639;
+  --dark-hover-bg: rgba(239, 243, 244, 0.1); /* Fondo hover blanco transparente */
+
+  /* Variables para el modo Bionic Reader (default) */
+  --bionic-bold-color: var(--foreground);
+  --bionic-normal-color: var(--secondary);
+  --bionic-bold-weight: 700;
+  --bionic-normal-weight: 400;
 }
 
+/* Modo oscuro usando clases en lugar de media query para permitir cambio manual */
+.dark-theme {
+  --background: var(--dark-background);
+  --foreground: var(--dark-foreground);
+  --card-bg: var(--dark-card-bg);
+  --card-bg-alt: var(--dark-card-bg-alt);
+  --border: var(--dark-border);
+  --border-dark: var(--dark-border-dark);
+  --hover-bg: var(--dark-hover-bg);
+  --primary-light: rgba(29, 155, 240, 0.2);
+}
+
+/* Para mantener compatibilidad con preferencias del sistema */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.light-theme) {
+    --background: var(--dark-background);
+    --foreground: var(--dark-foreground);
+    --card-bg: var(--dark-card-bg);
+    --card-bg-alt: var(--dark-card-bg-alt);
+    --border: var(--dark-border);
+    --border-dark: var(--dark-border-dark);
+    --hover-bg: var(--dark-hover-bg);
+    --primary-light: rgba(29, 155, 240, 0.2);
   }
 }
 
@@ -14,14 +72,17 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 * {
@@ -35,8 +96,156 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button, input, textarea {
+  font-family: inherit;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: calc(100vh - 70px);
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  transition: background-color 0.3s;
+}
+
+.btn {
+  display: inline-block;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9999px; /* Botones completamente redondeados como en Twitter */
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.15s;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-dark);
+  color: var(--foreground);
+}
+
+.btn-secondary:hover {
+  background-color: var(--hover-bg);
+}
+
+.btn-success {
+  background-color: var(--success);
+}
+
+.btn-success:hover {
+  background-color: var(--success);
+  filter: brightness(90%);
+}
+
+.btn-danger {
+  background-color: var(--error);
+}
+
+.btn-danger:hover {
+  background-color: var(--error);
+  filter: brightness(90%);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-dark);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: var(--card-bg);
+  color: var(--foreground);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.error-message {
+  color: var(--error);
+  font-size: 0.875rem;
+  margin-top: 5px;
+}
+
+/* Toggle para cambio de tema */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--foreground);
+}
+
+.theme-toggle:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Toggle para modo bionic reader */
+.bionic-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--foreground);
+}
+
+.bionic-toggle:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Estilos para el modo bionic reader */
+.bionic-text span.bionic-bold {
+  color: var(--bionic-bold-color);
+  font-weight: var(--bionic-bold-weight);
+}
+
+.bionic-text span.bionic-normal {
+  color: var(--bionic-normal-color);
+  font-weight: var(--bionic-normal-weight);
 }

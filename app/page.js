@@ -1,95 +1,84 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link';
+import Navbar from './components/Navbar';
+import connectDB from './lib/mongodb';
+import Post from './models/Post';
+import Comment from './models/Comment';
+import './home.css';
 
-export default function Home() {
+async function getPosts() {
+  await connectDB();
+  const posts = await Post.find({})
+    .sort({ createdAt: -1 })
+    .populate('author', 'name')
+    .limit(20)
+    .lean();
+
+  // Obtenemos el número de comentarios para cada post
+  const postsWithCommentCount = await Promise.all(posts.map(async (post) => {
+    const commentCount = await Comment.countDocuments({ post: post._id });
+    return { ...post, commentCount };
+  }));
+  
+  return JSON.parse(JSON.stringify(postsWithCommentCount));
+}
+
+export default async function Home() {
+  const posts = await getPosts();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+    <>
+      <Navbar />
+      <main>
+        <h1 className="page-title">Muro Público</h1>
+        
+        {posts.length === 0 ? (
+          <div className="empty-state">
+            <h2>¡No hay posts todavía!</h2>
+            <p>Sé el primero en publicar algo.</p>
+            <Link href="/new-post" className="btn">Crear un Post</Link>
+          </div>
+        ) : (
+          <div className="posts-grid">
+            {posts.map((post) => (
+              <Link href={`/posts/${post._id}`} key={post._id} className="post-card-link">
+                <div className="post-card">
+                  {post.imageUrl && (
+                    <div className="post-image-container">
+                      <img src={post.imageUrl} alt={post.title} className="post-image" />
+                    </div>
+                  )}
+                  <div className="post-content">
+                    <h2 className="post-title">{post.title}</h2>
+                    <p className="post-excerpt">
+                      {post.content.length > 150 
+                        ? `${post.content.substring(0, 150)}...` 
+                        : post.content}
+                    </p>
+                    <div className="post-footer">
+                      <span className="post-author">Por {post.author.name}</span>
+                      <div className="post-info">
+                        <span className="post-date">
+                          {new Date(post.createdAt).toLocaleDateString('es-ES', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </span>
+                        <span className="post-comments-count">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                          </svg>
+                          {post.commentCount}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </>
   );
 }

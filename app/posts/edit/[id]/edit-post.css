@@ -1,0 +1,117 @@
+.edit-post-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.edit-post-header {
+  margin-bottom: 30px;
+}
+
+.back-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: var(--primary);
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.back-button:hover {
+  color: var(--primary-dark);
+}
+
+.edit-post-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--foreground);
+}
+
+.edit-post-error {
+  background-color: rgba(244, 33, 46, 0.1);
+  border-left: 3px solid var(--error);
+  color: var(--error);
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+}
+
+.edit-post-form {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 25px;
+  border: 1px solid var(--border);
+}
+
+.image-preview-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-image-btn:hover {
+  background-color: var(--error);
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-input-file {
+  display: none;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+  border: 2px dashed var(--border-dark);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--secondary);
+  background-color: var(--card-bg-alt);
+}
+
+.upload-label:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.upload-label svg {
+  margin-bottom: 10px;
+}
+
+.edit-post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+} 
