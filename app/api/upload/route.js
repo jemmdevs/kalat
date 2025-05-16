@@ -1,4 +1,4 @@
-import { handleUpload } from '@vercel/blob/client';
+import { handleUpload, put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from '@/app/lib/auth';
@@ -12,13 +12,25 @@ export async function POST(request) {
   }
 
   try {
-    const response = await handleUpload({
-      request,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+    // Obtener el formData directamente de la petición
+    const formData = await request.formData();
+    const file = formData.get("file");
+    
+    if (!file) {
+      return NextResponse.json(
+        { error: "No se encontró ningún archivo" },
+        { status: 400 }
+      );
+    }
+
+    // Subir archivo usando el método put
+    const blob = await put(file.name, file, {
+      access: 'public',
     });
-    return NextResponse.json(response);
+
+    return NextResponse.json(blob);
   } catch (error) {
     console.error('Error al subir imagen:', error);
-    return NextResponse.json({ error: 'Error al subir imagen' }, { status: 500 });
+    return NextResponse.json({ error: 'Error al subir imagen: ' + error.message }, { status: 500 });
   }
 } 

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { upload } from '@vercel/blob/client';
 import Navbar from '../components/Navbar';
 import './new-post.css';
 
@@ -65,10 +64,20 @@ export default function NewPost() {
       
       // Subir imagen si existe
       if (image) {
-        const blob = await upload(image.name, image, {
-          access: 'public',
-          handleUploadUrl: '/api/upload',
+        const formData = new FormData();
+        formData.append("file", image);
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
         });
+        
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error('Error al subir la imagen: ' + (errorData.error || 'Error desconocido'));
+        }
+        
+        const blob = await uploadResponse.json();
         imageUrl = blob.url;
       }
       
@@ -96,7 +105,7 @@ export default function NewPost() {
       router.push('/');
       router.refresh();
     } catch (error) {
-      console.error('Error al crear post', error);
+      console.error('Error al crear post:', error);
       setError(error.message || 'Ocurrió un error al crear el post');
       setLoading(false);
     }
