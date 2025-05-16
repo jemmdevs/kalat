@@ -38,12 +38,12 @@ export async function POST(request) {
   }
   
   try {
-    const { title, content, imageUrl } = await request.json();
+    const { title, description, content, imageUrl } = await request.json();
     
     // Validar campos requeridos
-    if (!title || !content) {
+    if (!title || !description || !content) {
       return NextResponse.json(
-        { message: 'El título y contenido son obligatorios' },
+        { message: 'El título, descripción y contenido son obligatorios' },
         { status: 400 }
       );
     }
@@ -53,6 +53,7 @@ export async function POST(request) {
     // Crear nuevo post
     const newPost = await Post.create({
       title,
+      description,
       content,
       imageUrl: imageUrl || '',
       author: session.user.id,

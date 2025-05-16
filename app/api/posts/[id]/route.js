@@ -72,12 +72,12 @@ export async function PUT(request, { params }) {
       );
     }
     
-    const { title, content, imageUrl } = await request.json();
+    const { title, description, content, imageUrl } = await request.json();
     
     // Validar campos requeridos
-    if (!title || !content) {
+    if (!title || !description || !content) {
       return NextResponse.json(
-        { message: 'El título y contenido son obligatorios' },
+        { message: 'El título, descripción y contenido son obligatorios' },
         { status: 400 }
       );
     }
@@ -104,6 +104,7 @@ export async function PUT(request, { params }) {
     
     // Actualizar el post
     post.title = title;
+    post.description = description;
     post.content = content;
     post.imageUrl = imageUrl || '';
     

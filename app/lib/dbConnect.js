@@ -34,6 +34,11 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Por favor añade un título'],
   },
+  description: {
+    type: String,
+    required: [true, 'Por favor añade una descripción'],
+    maxlength: [250, 'La descripción no puede tener más de 250 caracteres'],
+  },
   content: {
     type: String,
     required: [true, 'Por favor añade contenido'],

@@ -11,6 +11,7 @@ export default function NewPost() {
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     title: '',
+    description: '',
     content: '',
   });
   const [image, setImage] = useState(null);
@@ -79,6 +80,7 @@ export default function NewPost() {
         },
         body: JSON.stringify({
           title: formData.title,
+          description: formData.description,
           content: formData.content,
           imageUrl
         }),
@@ -122,6 +124,22 @@ export default function NewPost() {
                 required
                 maxLength={100}
               />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="description" className="form-label">Descripción</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="form-input"
+                required
+                maxLength={250}
+                rows={3}
+                placeholder="Escribe una breve descripción del post (máximo 250 caracteres)"
+              ></textarea>
+              <small className="form-help-text">{formData.description.length}/250 caracteres</small>
             </div>
             
             <div className="form-group">

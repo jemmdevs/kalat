@@ -12,6 +12,7 @@ export default function EditPost({ params }) {
   const { id } = params;
   const [formData, setFormData] = useState({
     title: '',
+    description: '',
     content: '',
     imageUrl: '',
   });
@@ -51,6 +52,7 @@ export default function EditPost({ params }) {
         
         setFormData({
           title: post.title,
+          description: post.description || '',
           content: post.content,
           imageUrl: post.imageUrl || '',
         });
@@ -90,10 +92,11 @@ export default function EditPost({ params }) {
     return null;
   }
 
-  const handleTitleChange = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      title: e.target.value
+      [name]: value
     }));
   };
 
@@ -153,6 +156,7 @@ export default function EditPost({ params }) {
         },
         body: JSON.stringify({
           title: formData.title,
+          description: formData.description,
           content: formData.content,
           imageUrl: imageUrl,
         }),
@@ -194,11 +198,27 @@ export default function EditPost({ params }) {
                 id="title"
                 name="title"
                 value={formData.title}
-                onChange={handleTitleChange}
+                onChange={handleChange}
                 className="form-input"
                 required
                 maxLength={100}
               />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="description" className="form-label">Descripción</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="form-input"
+                required
+                maxLength={250}
+                rows={3}
+                placeholder="Escribe una breve descripción del post (máximo 250 caracteres)"
+              ></textarea>
+              <small className="form-help-text">{formData.description.length}/250 caracteres</small>
             </div>
             
             <div className="form-group">
@@ -250,7 +270,7 @@ export default function EditPost({ params }) {
                 Cancelar
               </Link>
               <button type="submit" className="btn" disabled={isSaving}>
-                {isSaving ? 'Guardando...' : 'Guardar cambios'}
+                {isSaving ? 'Guardando...' : 'Guardar Cambios'}
               </button>
             </div>
           </form>

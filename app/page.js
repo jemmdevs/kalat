@@ -57,9 +57,9 @@ export default async function Home() {
                   <div className="post-content">
                     <h2 className="post-title">{post.title}</h2>
                     <p className="post-excerpt">
-                      {post.content.length > 150 
+                      {post.description || (post.content.length > 150 
                         ? `${post.content.substring(0, 150)}...` 
-                        : post.content}
+                        : post.content)}
                     </p>
                     <div className="post-footer">
                       <span className="post-author">Por {post.author?.name || 'Usuario desconocido'}</span>
