@@ -144,7 +144,13 @@ export default function PostPage({ params }) {
               width={800}
               height={500}
               style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
+              onError={(e) => {
+                console.error('Error loading image:', post.imageUrl);
+                console.log('Image error details:', e);
+              }}
+              unoptimized={true}
             />
+            <p className="image-debug">Image URL: {post.imageUrl}</p>
           </div>
         )}
         
