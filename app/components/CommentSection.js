@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import './CommentSection.css';
 
 export default function CommentSection({ postId }) {
@@ -132,7 +133,13 @@ export default function CommentSection({ postId }) {
         <form onSubmit={handleCommentSubmit} className="comment-form">
           <div className="comment-form-avatar">
             {session.user.image ? (
-              <img src={session.user.image} alt={session.user.name} />
+              <Image 
+                src={session.user.image} 
+                alt={session.user.name} 
+                width={40} 
+                height={40} 
+                className="avatar-image"
+              />
             ) : (
               <div className="comment-avatar-placeholder">
                 {session.user.name.charAt(0).toUpperCase()}
@@ -176,7 +183,13 @@ export default function CommentSection({ postId }) {
             <div key={comment._id} className="comment-item">
               <div className="comment-avatar">
                 {comment.author.image ? (
-                  <img src={comment.author.image} alt={comment.author.name} />
+                  <Image 
+                    src={comment.author.image} 
+                    alt={comment.author.name} 
+                    width={40} 
+                    height={40} 
+                    className="avatar-image"
+                  />
                 ) : (
                   <div className="comment-avatar-placeholder">
                     {comment.author.name.charAt(0).toUpperCase()}

@@ -8,6 +8,19 @@ export default function BionicReader() {
   useEffect(() => {
     // Al cargar, verificar la preferencia guardada
     const bionicPreference = localStorage.getItem('bionicReader');
+    
+    const applyBionicReader = (enabled) => {
+      if (enabled) {
+        document.body.classList.add('bionic-mode');
+        // Procesar todos los párrafos existentes
+        processParagraphs();
+      } else {
+        document.body.classList.remove('bionic-mode');
+        // Restaurar el contenido original
+        restoreOriginalContent();
+      }
+    };
+    
     if (bionicPreference === 'enabled') {
       setIsBionicEnabled(true);
       applyBionicReader(true);

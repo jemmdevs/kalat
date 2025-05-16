@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from './components/Navbar';
 import { dbConnect, Post, Comment } from './lib/dbConnect';
 import './home.css';
@@ -51,7 +52,14 @@ export default async function Home() {
                 <div className="post-card">
                   {post.imageUrl && (
                     <div className="post-image-container">
-                      <img src={post.imageUrl} alt={post.title} className="post-image" />
+                      <Image 
+                        src={post.imageUrl} 
+                        alt={post.title} 
+                        className="post-image"
+                        width={400}
+                        height={250}
+                        style={{ objectFit: 'cover' }}
+                      />
                     </div>
                   )}
                   <div className="post-content">

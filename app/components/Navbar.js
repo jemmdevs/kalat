@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import ThemeToggle from './ThemeToggle';
 import BionicReader from './BionicReader';
@@ -38,7 +39,13 @@ export default function Navbar() {
                 <div className="user-profile-nav">
                   <span className="user-name">{session?.user?.name}</span>
                   {session?.user?.image ? (
-                    <img src={session.user.image} alt={session.user.name} className="user-avatar" />
+                    <Image 
+                      src={session.user.image} 
+                      alt={session.user.name} 
+                      width={32} 
+                      height={32} 
+                      className="user-avatar" 
+                    />
                   ) : (
                     <div className="user-avatar-placeholder">
                       {session?.user?.name?.charAt(0).toUpperCase()}

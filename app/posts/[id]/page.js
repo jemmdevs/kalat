@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from '@/app/components/Navbar';
 import CommentSection from '@/app/components/CommentSection';
 import './post.css';
@@ -136,7 +137,14 @@ export default function PostPage({ params }) {
         
         {post.imageUrl && (
           <div className="post-image-wrapper">
-            <img src={post.imageUrl} alt={post.title} className="post-image" />
+            <Image 
+              src={post.imageUrl} 
+              alt={post.title} 
+              className="post-image" 
+              width={800}
+              height={500}
+              style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
+            />
           </div>
         )}
         
