@@ -27,6 +27,12 @@ export default function PostPage({ params }) {
         }
         
         const data = await res.json();
+        
+        // Asegurarse de que author siempre existe
+        if (!data.author) {
+          data.author = { name: 'Usuario desconocido' };
+        }
+        
         setPost(data);
         setLoading(false);
       } catch (err) {
@@ -39,7 +45,7 @@ export default function PostPage({ params }) {
     loadPost();
   }, [id]);
 
-  const isAuthor = session?.user?.id === post?.author._id;
+  const isAuthor = session?.user?.id === post?.author?._id;
   
   const handleDelete = async () => {
     if (!confirm('¿Estás seguro que deseas eliminar este post? Esta acción no se puede deshacer.')) {
@@ -123,7 +129,7 @@ export default function PostPage({ params }) {
           
           <h1 className="post-title">{post.title}</h1>
           <div className="post-meta">
-            <span className="post-author">Por {post.author.name}</span>
+            <span className="post-author">Por {post.author?.name || 'Usuario desconocido'}</span>
             <span className="post-date">{formattedDate}</span>
           </div>
         </div>

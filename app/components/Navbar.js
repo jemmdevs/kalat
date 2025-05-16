@@ -9,6 +9,7 @@ import './Navbar.css';
 export default function Navbar() {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
+  const isAdmin = session?.user?.role === 'admin';
 
   return (
     <nav className="navbar">
@@ -28,6 +29,11 @@ export default function Navbar() {
           ) : (
             <>
               <Link href="/new-post" className="menu-item">Nuevo Post</Link>
+              {isAdmin && (
+                <Link href="/admin" className="menu-item admin-link">
+                  Panel Admin
+                </Link>
+              )}
               <Link href="/profile" className="menu-item">
                 <div className="user-profile-nav">
                   <span className="user-name">{session?.user?.name}</span>

@@ -157,4 +157,22 @@
   align-items: center;
   gap: 5px;
   margin-right: 10px;
+}
+
+.admin-link {
+  background-color: var(--error);
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.15s;
+}
+
+.admin-link:hover {
+  background-color: #e01e2c;
+  transform: translateY(-1px);
+}
+
+.admin-link:after {
+  display: none;
 } 

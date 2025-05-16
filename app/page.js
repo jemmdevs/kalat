@@ -1,25 +1,32 @@
 import Link from 'next/link';
 import Navbar from './components/Navbar';
-import connectDB from './lib/mongodb';
-import Post from './models/Post';
-import Comment from './models/Comment';
+import { dbConnect, Post, Comment } from './lib/dbConnect';
 import './home.css';
 
 async function getPosts() {
-  await connectDB();
-  const posts = await Post.find({})
-    .sort({ createdAt: -1 })
-    .populate('author', 'name')
-    .limit(20)
-    .lean();
+  await dbConnect();
+  try {
+    const posts = await Post.find({})
+      .sort({ createdAt: -1 })
+      .populate('author', 'name')
+      .limit(20)
+      .lean();
 
-  // Obtenemos el número de comentarios para cada post
-  const postsWithCommentCount = await Promise.all(posts.map(async (post) => {
-    const commentCount = await Comment.countDocuments({ post: post._id });
-    return { ...post, commentCount };
-  }));
-  
-  return JSON.parse(JSON.stringify(postsWithCommentCount));
+    // Obtenemos el número de comentarios para cada post
+    const postsWithCommentCount = await Promise.all(posts.map(async (post) => {
+      const commentCount = await Comment.countDocuments({ post: post._id });
+      // Asegurarnos de que author siempre tenga un valor
+      if (!post.author) {
+        post.author = { name: 'Usuario desconocido' };
+      }
+      return { ...post, commentCount };
+    }));
+    
+    return JSON.parse(JSON.stringify(postsWithCommentCount));
+  } catch (error) {
+    console.error('Error al obtener posts:', error);
+    return [];
+  }
 }
 
 export default async function Home() {
@@ -55,7 +62,7 @@ export default async function Home() {
                         : post.content}
                     </p>
                     <div className="post-footer">
-                      <span className="post-author">Por {post.author.name}</span>
+                      <span className="post-author">Por {post.author?.name || 'Usuario desconocido'}</span>
                       <div className="post-info">
                         <span className="post-date">
                           {new Date(post.createdAt).toLocaleDateString('es-ES', {

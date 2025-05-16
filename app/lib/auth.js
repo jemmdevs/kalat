@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import connectDB from "./mongodb";
-import User from "../models/User";
+import { dbConnect, User } from "./dbConnect";
 import { compare } from "bcrypt";
 
 export const authOptions = {
@@ -13,7 +12,7 @@ export const authOptions = {
         password: { label: "Contraseña", type: "password" }
       },
       async authorize(credentials) {
-        await connectDB();
+        await dbConnect();
         
         const user = await User.findOne({ email: credentials.email });
         
@@ -31,7 +30,8 @@ export const authOptions = {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
-          image: user.image
+          image: user.image,
+          role: user.role
         };
       }
     })
@@ -40,12 +40,14 @@ export const authOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
+        session.user.role = token.role;
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     }
