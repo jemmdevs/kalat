@@ -1,24 +1,24 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/app/lib/mongodb';
-import Comment from '@/app/models/Comment';
+import { dbConnect, Comment, Post } from '@/app/lib/dbConnect';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/lib/auth';
 
-// GET - Obtener comentarios por post ID
+// GET - Obtener comentarios de un post
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const postId = searchParams.get('postId');
+  const url = new URL(request.url);
+  const postId = url.searchParams.get('postId');
   
   if (!postId) {
     return NextResponse.json(
-      { message: 'Se requiere el ID del post' },
+      { message: 'Se requiere el ID del post' }, 
       { status: 400 }
     );
   }
-
+  
   try {
-    await connectDB();
+    await dbConnect();
     
+    // Obtener comentarios del post
     const comments = await Comment.find({ post: postId })
       .sort({ createdAt: -1 })
       .populate('author', 'name image')
@@ -34,51 +34,59 @@ export async function GET(request) {
   }
 }
 
-// POST - Crear nuevo comentario
+// POST - Crear un nuevo comentario
 export async function POST(request) {
   const session = await getServerSession(authOptions);
   
-  // Verificar autenticación
-  if (!session || !session.user) {
+  // Verificar que el usuario esté autenticado
+  if (!session) {
     return NextResponse.json(
       { message: 'No autorizado' },
       { status: 401 }
     );
   }
-
+  
+  const { postId, content } = await request.json();
+  
+  // Validar datos
+  if (!postId || !content) {
+    return NextResponse.json(
+      { message: 'ID del post y contenido son requeridos' },
+      { status: 400 }
+    );
+  }
+  
   try {
-    const { postId, content } = await request.json();
+    await dbConnect();
     
-    // Validar campos requeridos
-    if (!postId || !content) {
+    // Verificar que el post existe
+    const post = await Post.findById(postId);
+    
+    if (!post) {
       return NextResponse.json(
-        { message: 'Se requiere el ID del post y el contenido' },
-        { status: 400 }
+        { message: 'Post no encontrado' },
+        { status: 404 }
       );
     }
     
-    await connectDB();
-    
     // Crear el comentario
-    const newComment = await Comment.create({
+    const comment = await Comment.create({
       post: postId,
       author: session.user.id,
       content,
     });
     
-    // Poblar los datos del autor para devolverlo en la respuesta
-    const populatedComment = await Comment.findById(newComment._id)
-      .populate('author', 'name image')
-      .lean();
+    // Poblar el autor del comentario
+    await comment.populate('author', 'name image');
     
     return NextResponse.json(
-      { message: 'Comentario creado correctamente', comment: populatedComment },
+      { message: 'Comentario creado correctamente', comment },
       { status: 201 }
     );
   } catch (error) {
     console.error('Error al crear comentario:', error);
     return NextResponse.json(
-      { message: 'Error al crear el comentario' },
+      { message: 'Error al crear comentario' },
       { status: 500 }
     );
   }

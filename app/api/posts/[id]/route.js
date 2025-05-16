@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/app/lib/mongodb';
-import Post from '@/app/models/Post';
-import Comment from '@/app/models/Comment';
+import { dbConnect, Post, Comment } from '@/app/lib/dbConnect';
 import mongoose from 'mongoose';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/lib/auth';
@@ -19,7 +17,7 @@ export async function GET(request, { params }) {
       );
     }
     
-    await connectDB();
+    await dbConnect();
     
     // Buscar el post por ID
     const post = await Post.findById(id)
@@ -82,7 +80,7 @@ export async function PUT(request, { params }) {
       );
     }
     
-    await connectDB();
+    await dbConnect();
     
     // Buscar el post
     const post = await Post.findById(id);
@@ -145,7 +143,7 @@ export async function DELETE(request, { params }) {
       );
     }
     
-    await connectDB();
+    await dbConnect();
     
     // Buscar el post
     const post = await Post.findById(id);

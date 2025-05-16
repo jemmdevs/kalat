@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import connectDB from '@/app/lib/mongodb';
-import Post from '@/app/models/Post';
+import { dbConnect, Post } from '@/app/lib/dbConnect';
 import { authOptions } from '@/app/lib/auth';
 
 // Obtener todos los posts (GET)
 export async function GET() {
   try {
-    await connectDB();
+    await dbConnect();
     
     const posts = await Post.find({})
       .sort({ createdAt: -1 })
@@ -48,7 +47,7 @@ export async function POST(request) {
       );
     }
     
-    await connectDB();
+    await dbConnect();
     
     // Crear nuevo post
     const newPost = await Post.create({

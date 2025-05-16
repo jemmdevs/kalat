@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
-import connectDB from '@/app/lib/mongodb';
-import User from '@/app/models/User';
+import bcrypt from 'bcryptjs';
+import { dbConnect, User } from '@/app/lib/dbConnect';
 
 export async function POST(request) {
   try {
     const { name, email, password } = await request.json();
     
-    // Validar campos
+    // Validar datos
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: 'Todos los campos son obligatorios' },
@@ -15,37 +14,37 @@ export async function POST(request) {
       );
     }
     
-    // Conectar a la base de datos
-    await connectDB();
+    await dbConnect();
     
-    // Verificar si el email ya existe
+    // Verificar si el usuario ya existe
     const userExists = await User.findOne({ email });
+    
     if (userExists) {
       return NextResponse.json(
         { message: 'El email ya está registrado' },
-        { status: 409 }
+        { status: 400 }
       );
     }
     
-    // Encriptar la contraseña
+    // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // Crear nuevo usuario
-    const newUser = await User.create({
+    // Crear usuario
+    const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
     
-    // Devolver usuario creado (sin contraseña)
-    const user = {
-      id: newUser._id.toString(),
-      name: newUser.name,
-      email: newUser.email,
-    };
-    
     return NextResponse.json(
-      { message: 'Usuario registrado correctamente', user },
+      { 
+        message: 'Usuario registrado correctamente',
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        }
+      },
       { status: 201 }
     );
   } catch (error) {

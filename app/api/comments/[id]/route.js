@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/app/lib/mongodb';
-import Comment from '@/app/models/Comment';
-import mongoose from 'mongoose';
+import { dbConnect, Comment } from '@/app/lib/dbConnect';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/lib/auth';
+import mongoose from 'mongoose';
 
-// Eliminar comentario (DELETE)
+// DELETE - Eliminar un comentario
 export async function DELETE(request, { params }) {
   const { id } = params;
   const session = await getServerSession(authOptions);
@@ -17,17 +16,17 @@ export async function DELETE(request, { params }) {
       { status: 401 }
     );
   }
-
+  
+  // Validar el formato del ID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return NextResponse.json(
+      { message: 'ID de comentario inválido' },
+      { status: 400 }
+    );
+  }
+  
   try {
-    // Validar formato del ID
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { message: 'ID de comentario inválido' },
-        { status: 400 }
-      );
-    }
-    
-    await connectDB();
+    await dbConnect();
     
     // Buscar el comentario
     const comment = await Comment.findById(id);
@@ -55,10 +54,10 @@ export async function DELETE(request, { params }) {
       { status: 200 }
     );
   } catch (error) {
-    console.error(`Error al eliminar el comentario con ID ${id}:`, error);
+    console.error('Error al eliminar comentario:', error);
     return NextResponse.json(
-      { message: 'Error al eliminar el comentario' },
+      { message: 'Error al eliminar comentario' },
       { status: 500 }
     );
   }
-} 
+}

@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import connectDB from '@/app/lib/mongodb';
-import Post from '@/app/models/Post';
+import { dbConnect, Post, Comment } from '@/app/lib/dbConnect';
 import { authOptions } from '@/app/lib/auth';
-import Comment from '@/app/models/Comment';
 import mongoose from 'mongoose';
 
 export async function GET(request, { params }) {
@@ -35,7 +33,7 @@ export async function GET(request, { params }) {
       );
     }
     
-    await connectDB();
+    await dbConnect();
     
     // Buscar los posts del usuario
     const posts = await Post.find({ author: id })
