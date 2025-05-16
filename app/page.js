@@ -62,10 +62,6 @@ export default async function Home() {
                         width={400}
                         height={250}
                         style={{ objectFit: 'cover' }}
-                        onError={(e) => {
-                          console.error('Error loading image:', post.imageUrl);
-                          console.log('Image error details:', e);
-                        }}
                         unoptimized={true}
                       />
                       <p className="image-debug" style={{fontSize: '10px'}}>URL: {post.imageUrl}</p>

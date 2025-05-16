@@ -144,13 +144,19 @@ export default function PostPage({ params }) {
               width={800}
               height={500}
               style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
-              onError={(e) => {
-                console.error('Error loading image:', post.imageUrl);
-                console.log('Image error details:', e);
-              }}
               unoptimized={true}
             />
             <p className="image-debug">Image URL: {post.imageUrl}</p>
+            
+            {/* Fallback regular img tag for testing */}
+            <div style={{marginTop: '20px', padding: '10px', border: '1px solid #ccc'}}>
+              <p>Fallback image test:</p>
+              <img 
+                src={post.imageUrl} 
+                alt="Test" 
+                style={{maxWidth: '100%', height: 'auto'}} 
+              />
+            </div>
           </div>
         )}
         
